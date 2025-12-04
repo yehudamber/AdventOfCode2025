@@ -21,10 +21,10 @@ int main()
 
     // Test PartialSumsView
     {
-        std::vector<int> data = { 1, 2, 3, 4, 5 };
+        auto data = { 1, 2, 3, 4, 5 };
         auto view = data | Utils::partialSums(0);
 
-        std::vector<int> expected = { 0, 1, 3, 6, 10, 15 };
+        auto expected = std::array{ 0, 1, 3, 6, 10, 15 };
         if (std::ranges::size(view) != std::ranges::size(expected))
         {
             std::println(std::cerr, "Test failed: expected size {}, got {}",
@@ -56,10 +56,10 @@ int main()
     }
 
     {
-        std::istringstream iss("1 2 3 4 5");
+        auto iss = std::istringstream("1 2 3 4 5");
         auto view = Utils::partialSums(std::views::istream<int>(iss), 1, std::multiplies<>());
 
-        std::vector<int> expected = { 1, 1, 2, 6, 24, 120 };
+        auto expected = std::array{ 1, 1, 2, 6, 24, 120 };
         auto it = view.begin();
         auto i = 0uz;
         for (; i < expected.size() && it != view.end(); ++i, ++it)
