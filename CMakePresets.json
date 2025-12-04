@@ -56,5 +56,25 @@
       "configurePreset": "clang-libc++",
       "inheritConfigureEnvironment": true
     }
+  ],
+  "testPresets": [
+    {
+      "name": "gcc",
+      "configurePreset": "gcc",
+      "inheritConfigureEnvironment": true,
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "clang-libstdc++",
+      "configurePreset": "clang-libstdc++",
+      "inheritConfigureEnvironment": true,
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "clang-libc++",
+      "configurePreset": "clang-libc++",
+      "inheritConfigureEnvironment": true,
+      "output": { "outputOnFailure": true }
+    }
   ]
 }

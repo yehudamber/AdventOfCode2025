@@ -9,4 +9,8 @@ set(CMAKE_CXX_MODULE_STD ON)
 
 project(AdventOfCode2025 LANGUAGES CXX)
 
+enable_testing()
+
 include(warnings.cmake)
+
+add_subdirectory(Utils)
