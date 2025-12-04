@@ -119,6 +119,12 @@ public:
 
     constexpr iterator begin() { return { std::ranges::begin(m_underlying), m_init, this }; }
     constexpr std::default_sentinel_t end() const { return {}; }
+
+    constexpr auto size()
+        requires std::ranges::sized_range<Underlying>
+    {
+        return std::ranges::size(m_underlying) + 1;
+    }
 };
 
 template <typename T, typename Add>
