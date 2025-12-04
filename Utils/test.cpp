@@ -14,6 +14,10 @@ static_assert(
     std::same_as<
         std::iter_value_t<std::ranges::iterator_t<Utils::PartialSumsView<std::span<double>, int>>>,
         double>);
+static_assert(
+    std::same_as<
+        std::iter_value_t<std::ranges::iterator_t<Utils::PartialSumsView<std::span<double>, long double>>>,
+        long double>);
 
 int main()
 {
