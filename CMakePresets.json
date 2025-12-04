@@ -1,0 +1,60 @@
+{
+  "version": 10,
+  "configurePresets": [
+    {
+      "name": "gcc",
+      "displayName": "GCC Debug",
+      "description": "Debug build with GCC",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/gcc",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "clang-libstdc++",
+      "displayName": "Clang + libstdc++ Debug",
+      "description": "Debug build with Clang and libstdc++",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/clang-libstdc++",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++"
+      }
+    },
+    {
+      "name": "clang-libc++",
+      "displayName": "Clang + libc++ Debug",
+      "description": "Debug build with Clang and libc++",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/clang-libc++",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_CXX_FLAGS": "-stdlib=libc++",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "gcc",
+      "configurePreset": "gcc",
+      "inheritConfigureEnvironment": true
+    },
+    {
+      "name": "clang-libstdc++",
+      "configurePreset": "clang-libstdc++",
+      "inheritConfigureEnvironment": true
+    },
+    {
+      "name": "clang-libc++",
+      "configurePreset": "clang-libc++",
+      "inheritConfigureEnvironment": true
+    }
+  ]
+}
