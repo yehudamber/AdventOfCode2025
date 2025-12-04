@@ -8,3 +8,5 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_MODULE_STD ON)
 
 project(AdventOfCode2025 LANGUAGES CXX)
+
+include(warnings.cmake)
