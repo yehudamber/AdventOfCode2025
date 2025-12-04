@@ -46,6 +46,13 @@ int main()
                              expected[i], *it);
                 return 1;
             }
+            if (std::cmp_not_equal(view.end() - it, expected.size() - i))
+            {
+                std::println(std::cerr,
+                             "Test failed at index {}: expected distance to end {}, got {}", i,
+                             expected.size() - i, view.end() - it);
+                return 1;
+            }
         }
         if (it != view.end())
         {
