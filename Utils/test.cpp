@@ -2,22 +2,17 @@ import std;
 import Utils;
 
 // Compile-time tests for PartialSumsView
+// clang-format off
 static_assert(std::ranges::view<Utils::PartialSumsView<std::span<int>, int>>);
 static_assert(std::ranges::forward_range<Utils::PartialSumsView<std::span<int>, int>>);
-static_assert(
-    std::ranges::view<Utils::PartialSumsView<std::ranges::basic_istream_view<double, char>, int>>);
-static_assert(std::ranges::input_range<
-              Utils::PartialSumsView<std::ranges::basic_istream_view<double, char>, int>>);
-static_assert(!std::ranges::forward_range<
-              Utils::PartialSumsView<std::ranges::basic_istream_view<double, char>, int>>);
-static_assert(
-    std::same_as<
-        std::iter_value_t<std::ranges::iterator_t<Utils::PartialSumsView<std::span<double>, int>>>,
-        double>);
-static_assert(
-    std::same_as<
-        std::iter_value_t<std::ranges::iterator_t<Utils::PartialSumsView<std::span<double>, long double>>>,
-        long double>);
+
+static_assert(std::ranges::view<Utils::PartialSumsView<std::ranges::basic_istream_view<double, char>, int>>);
+static_assert(std::ranges::input_range<Utils::PartialSumsView<std::ranges::basic_istream_view<double, char>, int>>);
+static_assert(!std::ranges::forward_range<Utils::PartialSumsView<std::ranges::basic_istream_view<double, char>, int>>);
+
+static_assert(std::same_as<std::iter_value_t<std::ranges::iterator_t<Utils::PartialSumsView<std::span<double>, int>>>, double>);
+static_assert(std::same_as<std::iter_value_t<std::ranges::iterator_t<Utils::PartialSumsView<std::span<double>, long double>>>, long double>);
+// clang-format on
 
 int main()
 {
