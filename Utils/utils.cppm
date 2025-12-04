@@ -77,7 +77,7 @@ class PartialSumsView : public std::ranges::view_interface<PartialSumsView<Under
         constexpr difference_type operator-(std::default_sentinel_t) const
             requires std::sized_sentinel_for<UnderlyingSentinel, UnderlyingIter>
         {
-            return m_underlying - m_parent->m_end + 1;
+            return m_underlying - m_parent->m_end - 1;
         }
 
         friend constexpr difference_type operator-(std::default_sentinel_t, const iterator& it)

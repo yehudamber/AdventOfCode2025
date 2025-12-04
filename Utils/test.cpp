@@ -25,6 +25,13 @@ int main()
         auto view = data | Utils::partialSums(0);
 
         std::vector<int> expected = { 0, 1, 3, 6, 10, 15 };
+        if (std::ranges::size(view) != std::ranges::size(expected))
+        {
+            std::println(std::cerr, "Test failed: expected size {}, got {}",
+                         std::ranges::size(expected), std::ranges::ssize(view));
+            return 1;
+        }
+
         auto it = view.begin();
         auto i = 0uz;
         for (; i < expected.size() && it != view.end(); ++i, ++it)
