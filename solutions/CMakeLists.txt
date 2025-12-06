@@ -4,9 +4,8 @@ function(add_solution name)
     endif()
 
     add_executable(${name} "${name}.cpp")
-    target_link_libraries(${name} PRIVATE getInput)
+    target_link_libraries(${name} PRIVATE Utils getInput)
     enable_cxx_warnings(${name})
 endfunction()
 
 add_solution(day1-1)
-target_link_libraries(day1-1 PRIVATE Utils)
