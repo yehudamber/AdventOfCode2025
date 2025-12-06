@@ -1,0 +1,3 @@
+# Puzzle inputs are user-specific
+*.txt
+!CMakeLists.txt

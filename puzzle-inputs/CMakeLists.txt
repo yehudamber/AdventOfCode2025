@@ -1,0 +1,5 @@
+add_library(getInput OBJECT)
+target_sources(getInput PUBLIC FILE_SET CXX_MODULES FILES getInput.cppm)
+target_compile_features(getInput PUBLIC cxx_std_23)
+target_compile_definitions(getInput PRIVATE SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+enable_cxx_warnings(getInput)

@@ -14,3 +14,4 @@ enable_testing()
 include(warnings.cmake)
 
 add_subdirectory(Utils)
+add_subdirectory(puzzle-inputs)
