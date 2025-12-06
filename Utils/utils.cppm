@@ -5,6 +5,7 @@ import std;
 namespace Utils
 {
 
+// PartialSumsView
 template <typename F, typename T, typename I, typename U>
 concept PartialSumsOperatorImpl = std::movable<U> && std::convertible_to<const T&, U>
     && std::convertible_to<std::invoke_result_t<F&, const T&, std::iter_reference_t<I>>, U>
@@ -171,5 +172,23 @@ struct PartialSumsViewAdaptor
 };
 
 export constexpr PartialSumsViewAdaptor partialSums{};
+
+// readLines
+template <typename Char, typename Traits> struct ReadLine
+{
+    std::basic_string<Char, Traits> m_line;
+
+    friend auto& operator>>(std::basic_istream<Char, Traits>& istr, ReadLine& rl)
+    {
+        return std::getline(istr, rl.m_line);
+    }
+};
+
+export template <typename Char, typename Traits>
+auto readLines(std::basic_istream<Char, Traits>& istr)
+{
+    return std::ranges::istream_view<ReadLine<Char, Traits>>(istr)
+        | std::views::transform(&ReadLine<Char, Traits>::m_line);
+}
 
 } // namespace Utils

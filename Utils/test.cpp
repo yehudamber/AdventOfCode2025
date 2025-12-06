@@ -14,6 +14,12 @@ static_assert(std::same_as<std::iter_value_t<std::ranges::iterator_t<Utils::Part
 static_assert(std::same_as<std::iter_value_t<std::ranges::iterator_t<Utils::PartialSumsView<std::span<double>, long double>>>, long double>);
 // clang-format on
 
+// Compile-time tests for readLines
+static_assert(std::ranges::view<decltype(Utils::readLines(std::cin))>);
+static_assert(std::ranges::input_range<decltype(Utils::readLines(std::cin))>);
+static_assert(
+    std::same_as<std::ranges::range_value_t<decltype(Utils::readLines(std::cin))>, std::string>);
+
 int main()
 {
     std::println("Running Utils tests...");
