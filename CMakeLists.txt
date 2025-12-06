@@ -15,3 +15,4 @@ include(warnings.cmake)
 
 add_subdirectory(Utils)
 add_subdirectory(puzzle-inputs)
+add_subdirectory(solutions)
