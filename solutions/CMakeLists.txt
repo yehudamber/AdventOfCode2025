@@ -10,3 +10,4 @@ endfunction()
 
 add_solution(day1-1)
 add_solution(day1-2)
+add_solution(day2-1)
