@@ -171,7 +171,79 @@ struct PartialSumsViewAdaptor
     }
 };
 
-export constexpr PartialSumsViewAdaptor partialSums{};
+export constexpr PartialSumsViewAdaptor partialSums;
+
+// rotate
+template <typename> constexpr auto isOwningView = false;
+
+template <typename R> constexpr auto isOwningView<std::ranges::owning_view<R>> = true;
+
+template <typename V> constexpr decltype(auto) getViewable(V&& view)
+{
+    if constexpr (std::is_lvalue_reference_v<V> && isOwningView<std::remove_cvref_t<V>>)
+    {
+        return std::forward<V>(view).base();
+    }
+    else
+    {
+        return std::forward<V>(view);
+    }
+}
+
+template <std::regular Size>
+    requires requires { typename std::ranges::iota_view<Size, Size>; }
+class Rotate : public std::ranges::range_adaptor_closure<Rotate<Size>>
+{
+    Size m_width;
+
+public:
+    constexpr explicit Rotate(Size width) : m_width(width) { }
+
+    template <std::ranges::viewable_range R>
+        requires std::ranges::forward_range<std::views::all_t<R>>
+        && std::ranges::random_access_range<std::ranges::range_reference_t<std::views::all_t<R>>>
+        && std::convertible_to<Size,
+                               std::ranges::range_difference_t<
+                                   std::ranges::range_reference_t<std::views::all_t<R>>>>
+    constexpr auto operator()(R&& range) const
+    {
+        return std::views::iota(Size(), m_width)
+            | std::views::transform(
+                   [view = std::views::all(std::forward<R>(range))](Size index)
+                   {
+                       return std::views::transform(
+                           getViewable(view),
+                           [index](auto&& row)
+                           {
+                               return *(
+                                   std::ranges::begin(std::forward<decltype(row)>(row))
+                                   + static_cast<std::ranges::range_difference_t<decltype(row)>>(
+                                       index));
+                           });
+                   });
+    }
+};
+
+struct RotateAdaptor
+{
+    template <typename R, typename Size>
+        requires requires { typename Rotate<Size>; } && requires(Rotate<Size> rotate, R&& range) {
+            { rotate(std::forward<R>(range)) };
+        }
+    static constexpr auto operator()(R&& range, Size width)
+    {
+        return Rotate<Size>(width)(std::forward<R>(range));
+    }
+
+    template <typename Size>
+        requires requires { typename Rotate<Size>; }
+    static constexpr auto operator()(Size width)
+    {
+        return Rotate<Size>(width);
+    }
+};
+
+export constexpr RotateAdaptor rotate;
 
 // readLines
 template <typename Char, typename Traits> struct ReadLine

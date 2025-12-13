@@ -14,6 +14,36 @@ static_assert(std::same_as<std::iter_value_t<std::ranges::iterator_t<Utils::Part
 static_assert(std::same_as<std::iter_value_t<std::ranges::iterator_t<Utils::PartialSumsView<std::span<double>, long double>>>, long double>);
 // clang-format on
 
+// Compile-time tests for rotate
+struct TestRotate
+{
+};
+static_assert(std::ranges::view<
+              decltype(Utils::rotate(std::declval<std::span<std::span<TestRotate>>>(), 0))>);
+static_assert(std::ranges::random_access_range<
+              decltype(Utils::rotate(std::declval<std::span<std::span<TestRotate>>>(), 0))>);
+static_assert(std::ranges::view<
+              decltype(Utils::rotate(std::declval<std::span<std::span<TestRotate>>>(), 0)[0])>);
+static_assert(std::ranges::random_access_range<
+              decltype(Utils::rotate(std::declval<std::span<std::span<TestRotate>>>(), 0)[0])>);
+static_assert(std::same_as<std::ranges::range_value_t<decltype(Utils::rotate(
+                               std::declval<std::span<std::span<TestRotate>>>(), 0)[0])>,
+                           TestRotate>);
+
+static_assert(std::ranges::view<decltype(Utils::rotate(
+                  std::declval<std::forward_list<std::span<TestRotate>>>(), 0))>);
+static_assert(std::ranges::random_access_range<decltype(Utils::rotate(
+                  std::declval<std::forward_list<std::span<TestRotate>>>(), 0))>);
+static_assert(std::ranges::view<decltype(Utils::rotate(
+                  std::declval<std::forward_list<std::span<TestRotate>>>(), 0)[0])>);
+static_assert(std::ranges::forward_range<decltype(Utils::rotate(
+                  std::declval<std::forward_list<std::span<TestRotate>>>(), 0)[0])>);
+static_assert(!std::ranges::bidirectional_range<decltype(Utils::rotate(
+                  std::declval<std::forward_list<std::span<TestRotate>>>(), 0)[0])>);
+static_assert(std::same_as<std::ranges::range_value_t<decltype(Utils::rotate(
+                               std::declval<std::forward_list<std::span<TestRotate>>>(), 0)[0])>,
+                           TestRotate>);
+
 // Compile-time tests for readLines
 static_assert(std::ranges::view<decltype(Utils::readLines(std::cin))>);
 static_assert(std::ranges::input_range<decltype(Utils::readLines(std::cin))>);
@@ -26,6 +56,7 @@ int main()
 
     // Test PartialSumsView
     {
+        std::println("\tUtils::PartialSumsView (test 1)...");
         auto data = { 1, 2, 3, 4, 5 };
         auto view = data | Utils::partialSums(0);
 
@@ -68,6 +99,7 @@ int main()
     }
 
     {
+        std::println("\tUtils::PartialSumsView (test 2)...");
         auto iss = std::istringstream("1 2 3 4 5");
         auto view = Utils::partialSums(std::views::istream<int>(iss), 1, std::multiplies<>());
 
@@ -91,6 +123,62 @@ int main()
         if (i != expected.size())
         {
             std::println(std::cerr, "Test failed: iterator stopped early at index {}", i);
+            return 1;
+        }
+    }
+
+    // Test rotate
+    {
+        std::println("\tUtils::rotate (test 1)...");
+        auto matrix
+            = std::array{ std::array{ 1, 2, 3 }, std::array{ 4, 5, 6 }, std::array{ 7, 8, 9 } };
+
+        auto rotated = matrix | Utils::rotate(3);
+
+        // Expected: columns become rows
+        // Column 0: [1, 4, 7]
+        // Column 1: [2, 5, 8]
+        // Column 2: [3, 6, 9]
+        auto expected
+            = std::array{ std::array{ 1, 4, 7 }, std::array{ 2, 5, 8 }, std::array{ 3, 6, 9 } };
+
+        auto col_idx = 0uz;
+        for (auto col : rotated)
+        {
+            if (col_idx >= expected.size())
+            {
+                std::println(std::cerr, "Test failed: rotate produced more columns than expected");
+                return 1;
+            }
+            auto row_idx = 0uz;
+            for (auto val : col)
+            {
+                if (row_idx >= expected[col_idx].size())
+                {
+                    std::println(std::cerr,
+                                 "Test failed: column {} has more elements than expected", col_idx);
+                    return 1;
+                }
+                if (val != expected[col_idx][row_idx])
+                {
+                    std::println(std::cerr, "Test failed at column {}, row {}: expected {}, got {}",
+                                 col_idx, row_idx, expected[col_idx][row_idx], val);
+                    return 1;
+                }
+                ++row_idx;
+            }
+            if (row_idx != expected[col_idx].size())
+            {
+                std::println(std::cerr, "Test failed: column {} has {} elements, expected {}",
+                             col_idx, row_idx, expected[col_idx].size());
+                return 1;
+            }
+            ++col_idx;
+        }
+        if (col_idx != expected.size())
+        {
+            std::println(std::cerr, "Test failed: rotate produced {} columns, expected {}", col_idx,
+                         expected.size());
             return 1;
         }
     }
