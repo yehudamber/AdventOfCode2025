@@ -174,22 +174,6 @@ struct PartialSumsViewAdaptor
 export constexpr PartialSumsViewAdaptor partialSums;
 
 // rotate
-template <typename> constexpr auto isOwningView = false;
-
-template <typename R> constexpr auto isOwningView<std::ranges::owning_view<R>> = true;
-
-template <typename V> constexpr decltype(auto) getViewable(V&& view)
-{
-    if constexpr (std::is_lvalue_reference_v<V> && isOwningView<std::remove_cvref_t<V>>)
-    {
-        return std::forward<V>(view).base();
-    }
-    else
-    {
-        return std::forward<V>(view);
-    }
-}
-
 template <std::regular Size>
     requires requires { typename std::ranges::iota_view<Size, Size>; }
 class Rotate : public std::ranges::range_adaptor_closure<Rotate<Size>>
@@ -211,15 +195,15 @@ public:
             | std::views::transform(
                    [view = std::views::all(std::forward<R>(range))](Size index)
                    {
-                       return std::views::transform(
-                           getViewable(view),
-                           [index](auto&& row)
-                           {
-                               return *(
-                                   std::ranges::begin(std::forward<decltype(row)>(row))
-                                   + static_cast<std::ranges::range_difference_t<decltype(row)>>(
-                                       index));
-                           });
+                       return std::ranges::subrange(view)
+                           | std::views::transform(
+                                  [index](auto&& row)
+                                  {
+                                      return *(std::ranges::begin(row)
+                                               + static_cast<
+                                                   std::ranges::range_difference_t<decltype(row)>>(
+                                                   index));
+                                  });
                    });
     }
 };
