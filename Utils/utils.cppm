@@ -174,7 +174,7 @@ struct PartialSumsViewAdaptor
 export constexpr PartialSumsViewAdaptor partialSums;
 
 // rotate
-template <std::regular Size>
+template <typename Size>
     requires requires { typename std::ranges::iota_view<Size, Size>; }
 class Rotate : public std::ranges::range_adaptor_closure<Rotate<Size>>
 {
